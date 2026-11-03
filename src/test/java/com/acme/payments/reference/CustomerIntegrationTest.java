@@ -35,7 +35,7 @@ class CustomersIntegrationTest extends PostgresqlIntegrationTest {
     @Test
     void returnsSuspendedCustomer() {
         CustomerDetails customer =
-                customers.getCustomer(new CustomerId(3));
+                customers.getCustomer(new CustomerId(2));
 
         assertThat(customer.status())
                 .isEqualTo(CustomerStatus.SUSPENDED);

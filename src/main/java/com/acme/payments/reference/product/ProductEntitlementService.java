@@ -13,7 +13,7 @@ class ProductEntitlementService
     private final ProductEntitlementMapper mapper;
 
     @Override
-    public ProductEntitlement getEntitlement(
+    public ProductEntitlement getProductEntitlement(
             CustomerId customerId,
             ProductCode productCode) {
 

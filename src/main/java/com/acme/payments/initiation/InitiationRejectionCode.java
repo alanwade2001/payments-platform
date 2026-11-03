@@ -1,0 +1,13 @@
+package com.acme.payments.initiation;
+
+public enum InitiationRejectionCode {
+    CUSTOMER_NOT_ACTIVE,
+    ACCOUNT_NOT_ACTIVE,
+    PRODUCT_NOT_ACTIVE,
+
+    INVALID_EXECUTION_DATE,
+    AMOUNT_LIMIT_EXCEEDED,
+    UNSUPPORTED_CURRENCY,
+    INVALID_CREDITOR_ACCOUNT,
+    DUPLICATE_PAYMENT
+}

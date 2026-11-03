@@ -1,7 +1,7 @@
 package com.acme.payments.reference;
 
 public interface ProductEntitlements {
-    ProductEntitlement getEntitlement(
+    ProductEntitlement getProductEntitlement(
             CustomerId customerId,
             ProductCode productCode);
 }
