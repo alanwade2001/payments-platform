@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.EventListener;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.math.BigDecimal;
@@ -98,6 +99,9 @@ class InitiationIntegrationTest extends PostgresqlIntegrationTest{
     @Autowired
     private PaymentInitiatedTestListener paymentEvents;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @BeforeEach
     void setUp() {
         paymentEvents.clear();
@@ -131,6 +135,7 @@ class InitiationIntegrationTest extends PostgresqlIntegrationTest{
                 submissionRepository.findById(
                         accepted.submissionId().value());
 
+
         assertThat(submission).isPresent();
 
         assertThat(submission.orElseThrow().getStatus())
@@ -156,6 +161,18 @@ class InitiationIntegrationTest extends PostgresqlIntegrationTest{
 
         assertThat(paymentEvents.events().getFirst().submissionId())
                 .isEqualTo(accepted.submissionId());
+
+        var status = jdbcTemplate.queryForObject(
+                """
+                select status
+                from engine_payment
+                where external_reference = ?
+                """,
+                String.class,
+                accepted.paymentId().reference());
+
+        assertThat(status)
+                .isEqualTo("RECEIVED");
     }
 
     @Test
