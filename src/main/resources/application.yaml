@@ -1,0 +1,19 @@
+spring.application.name: payments
+
+spring:
+  jpa:
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+        hibernate:
+          format_sql=true:
+
+  datasource:
+    url: jdbc:postgresql://0.0.0.0:5432/payments
+    username: payments
+    password: mysecretpassword
+
+  flyway.enabled: true
+
