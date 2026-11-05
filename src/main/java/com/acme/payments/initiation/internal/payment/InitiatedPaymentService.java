@@ -19,8 +19,8 @@ public class InitiatedPaymentService {
             InitiateCreditTransfer request) {
 
         var entity = InitiatedPaymentEntity.builder()
-                .submissionId(submissionId.value())
-                .debtorAccountId(debtorAccountId.value())
+                .submissionId(Long.parseLong(submissionId.value()))
+                .debtorAccountId(Long.parseLong(debtorAccountId.value()))
                 .debtorIban(request.debtorIban().value())
                 .creditorIban(request.creditorIban().value())
                 .endToEndId(request.endToEndId())

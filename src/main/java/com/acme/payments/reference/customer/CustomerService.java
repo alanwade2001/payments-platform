@@ -15,7 +15,8 @@ class CustomerService implements Customers {
     private final CustomerMapper mapper;
 
     public CustomerDetails getCustomer(CustomerId id) {
-        return repository.findById(id.value())
+        Long lid = Long.parseLong(id.value());
+        return repository.findById(lid)
                 .map(mapper::toDetails)
                 .orElseThrow(() ->
                         new CustomerNotFoundException(id));

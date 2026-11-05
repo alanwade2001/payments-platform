@@ -16,10 +16,12 @@ class AccountService implements Accounts {
             CustomerId customerId,
             Iban iban) {
 
+        long lid = Long.parseLong(customerId.value());
+
         return repository
                 .findByIbanAndCustomerId(
                         iban.value(),
-                        customerId.value())
+                        lid)
                 .map(mapper::toDetails)
                 .orElseThrow(() ->
                         new AccountNotFoundException(

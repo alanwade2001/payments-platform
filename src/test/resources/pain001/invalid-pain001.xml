@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pain.001.001.12">
+    <CstmrCdtTrfInitn>
+
+        <GrpHdr>
+            <!-- MsgId deliberately omitted to fail XSD validation -->
+            <CreDtTm>2026-11-03T10:00:00Z</CreDtTm>
+            <NbOfTxs>1</NbOfTxs>
+            <CtrlSum>250.00</CtrlSum>
+
+            <InitgPty>
+                <Nm>ACME Ltd</Nm>
+            </InitgPty>
+        </GrpHdr>
+
+        <PmtInf>
+            <PmtInfId>PMTINF-001</PmtInfId>
+            <PmtMtd>TRF</PmtMtd>
+            <NbOfTxs>1</NbOfTxs>
+            <CtrlSum>250.00</CtrlSum>
+
+            <ReqdExctnDt>
+                <Dt>2026-11-10</Dt>
+            </ReqdExctnDt>
+
+            <Dbtr>
+                <Nm>ACME Ltd</Nm>
+            </Dbtr>
+
+            <DbtrAcct>
+                <Id>
+                    <IBAN>IE29AIBK93115212345678</IBAN>
+                </Id>
+            </DbtrAcct>
+
+            <DbtrAgt>
+                <FinInstnId>
+                    <BICFI>AIBKIE2D</BICFI>
+                </FinInstnId>
+            </DbtrAgt>
+
+            <CdtTrfTxInf>
+                <PmtId>
+                    <EndToEndId>INV-12345</EndToEndId>
+                </PmtId>
+
+                <Amt>
+                    <InstdAmt Ccy="EUR">250.00</InstdAmt>
+                </Amt>
+
+                <CdtrAgt>
+                    <FinInstnId>
+                        <BICFI>COBADEFFXXX</BICFI>
+                    </FinInstnId>
+                </CdtrAgt>
+
+                <Cdtr>
+                    <Nm>Example Supplier</Nm>
+                </Cdtr>
+
+                <CdtrAcct>
+                    <Id>
+                        <IBAN>DE89370400440532013000</IBAN>
+                    </Id>
+                </CdtrAcct>
+
+                <RmtInf>
+                    <Ustrd>Invoice INV-12345</Ustrd>
+                </RmtInf>
+
+            </CdtTrfTxInf>
+        </PmtInf>
+
+    </CstmrCdtTrfInitn>
+</Document>

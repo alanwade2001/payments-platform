@@ -1,6 +1,6 @@
 package com.acme.payments.reference;
 
-public record CustomerId(long value) {
+public record CustomerId(String value) {
     public String reference() {
         return "CUST-" + value;
     }

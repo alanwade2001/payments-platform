@@ -11,7 +11,7 @@ public interface CustomerMapper {
     @Mapping(target = "customerId", source = "id")
     CustomerDetails toDetails(CustomerEntity entity);
 
-    default CustomerId toCustomerId(Long id) {
+    default CustomerId toCustomerId(String id) {
         return id == null ? null : new CustomerId(id);
     }
 }

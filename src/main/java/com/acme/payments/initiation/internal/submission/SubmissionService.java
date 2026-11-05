@@ -18,8 +18,9 @@ public class SubmissionService {
             CustomerId customerId,
             ProductCode productCode) {
 
+        Long lid = Long.parseLong(customerId.value());
         var entity = SubmissionEntity.builder()
-                .customerId(customerId.value())
+                .customerId(lid)
                 .productCode(productCode)
                 .status(SubmissionStatus.RECEIVED)
                 .createdAt(Instant.now())
@@ -27,7 +28,7 @@ public class SubmissionService {
 
         var saved = repository.save(entity);
 
-        return new SubmissionId(saved.getId());
+        return new SubmissionId(saved.getId() + "");
     }
 
     public void accept(SubmissionId submissionId) {
@@ -41,7 +42,8 @@ public class SubmissionService {
     }
 
     private SubmissionEntity getSubmission(SubmissionId submissionId) {
-        return repository.findById(submissionId.value())
+        long lid =  Long.parseLong(submissionId.value());
+        return repository.findById(lid)
                 .orElseThrow(() ->
                         new IllegalStateException(
                                 "Submission not found: " + submissionId));

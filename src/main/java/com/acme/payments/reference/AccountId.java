@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 
-public record AccountId(long value) {
+public record AccountId(String value) {
 
     public String reference() {
         return "ACCT-" + value;

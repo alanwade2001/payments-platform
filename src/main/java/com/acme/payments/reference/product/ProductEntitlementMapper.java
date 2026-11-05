@@ -10,7 +10,7 @@ public interface ProductEntitlementMapper {
     ProductEntitlement toEntitlement(
             ProductEntitlementEntity entity);
 
-    default CustomerId toCustomerId(Long id) {
+    default CustomerId toCustomerId(String id) {
         return id == null ? null : new CustomerId(id);
     }
 }

@@ -13,11 +13,11 @@ public interface AccountMapper {
     @Mapping(target = "accountId", source = "id")
     AccountDetails toDetails(AccountEntity entity);
 
-    default AccountId toAccountId(Long id) {
+    default AccountId toAccountId(String id) {
         return id == null ? null : new AccountId(id);
     }
 
-    default CustomerId toCustomerId(Long id) {
+    default CustomerId toCustomerId(String id) {
         return id == null ? null : new CustomerId(id);
     }
 

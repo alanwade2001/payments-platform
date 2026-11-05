@@ -20,10 +20,10 @@ class CustomersIntegrationTest extends PostgresqlIntegrationTest {
     @Test
     void returnsCustomer() {
         CustomerDetails customer =
-                customers.getCustomer(new CustomerId(1));
+                customers.getCustomer(new CustomerId("1"));
 
         assertThat(customer.customerId())
-                .isEqualTo(new CustomerId(1));
+                .isEqualTo(new CustomerId("1"));
 
         assertThat(customer.name())
                 .isEqualTo("ACME Ltd");
@@ -35,7 +35,7 @@ class CustomersIntegrationTest extends PostgresqlIntegrationTest {
     @Test
     void returnsSuspendedCustomer() {
         CustomerDetails customer =
-                customers.getCustomer(new CustomerId(2));
+                customers.getCustomer(new CustomerId("2"));
 
         assertThat(customer.status())
                 .isEqualTo(CustomerStatus.SUSPENDED);
@@ -43,7 +43,7 @@ class CustomersIntegrationTest extends PostgresqlIntegrationTest {
 
     @Test
     void throwsWhenCustomerDoesNotExist() {
-        CustomerId id = new CustomerId(999);
+        CustomerId id = new CustomerId("999");
 
         assertThatThrownBy(() -> customers.getCustomer(id))
                 .isInstanceOf(CustomerNotFoundException.class);

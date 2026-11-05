@@ -19,7 +19,7 @@ class ProductEntitlementService
 
         return repository
                 .findByCustomerIdAndProductCode(
-                        customerId.value(),
+                        Long.parseLong(customerId.value()),
                         productCode)
                 .map(mapper::toEntitlement)
                 .orElseThrow(() ->

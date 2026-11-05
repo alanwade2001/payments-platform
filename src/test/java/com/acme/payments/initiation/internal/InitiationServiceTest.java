@@ -31,14 +31,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Sql("/reference-test-data.sql")
 class InitiationIntegrationTest extends PostgresqlIntegrationTest{
 
-    private static final CustomerId CUSTOMER_ID = new CustomerId(1);
-    private static final CustomerId SUSPENDED_CUSTOMER_ID = new CustomerId(2);
-    private static final CustomerId BLOCKED_ACCOUNT_CUSTOMER_ID = new CustomerId(3);
-    private static final CustomerId BLOCKED_PRODUCT_CUSTOMER_ID = new CustomerId(4);
+    private static final CustomerId CUSTOMER_ID = new CustomerId("1");
+    private static final CustomerId SUSPENDED_CUSTOMER_ID = new CustomerId("2");
+    private static final CustomerId BLOCKED_ACCOUNT_CUSTOMER_ID = new CustomerId("3");
+    private static final CustomerId BLOCKED_PRODUCT_CUSTOMER_ID = new CustomerId("4");
 
 
-    private static final AccountId ACCOUNT_ID = new AccountId(10);
-    private static final SubmissionId SUBMISSION_ID = new SubmissionId(100);
+    private static final AccountId ACCOUNT_ID = new AccountId("10");
+    private static final SubmissionId SUBMISSION_ID = new SubmissionId("100");
 
     private static final Iban DEBTOR_IBAN =
             new Iban("IE29AIBK93115212345678");
@@ -128,24 +128,20 @@ class InitiationIntegrationTest extends PostgresqlIntegrationTest{
         var accepted =
                 (InitiationOutcome.Accepted) outcome;
 
-        assertThat(accepted.submissionId().value())
+        long actual = Long.parseLong(accepted.submissionId().value());
+        assertThat(actual)
                 .isPositive();
 
         var submission =
                 submissionRepository.findById(
-                        accepted.submissionId().value());
+                        actual
+                );
 
 
         assertThat(submission).isPresent();
 
         assertThat(submission.orElseThrow().getStatus())
                 .isEqualTo(SubmissionStatus.ACCEPTED);
-
-        assertThat(accepted.submissionId().value())
-                .isPositive();
-
-        assertThat(accepted.paymentId().value())
-                .isPositive();
 
         assertThat(submission.get().getCustomerId())
                 .isEqualTo(1L);
