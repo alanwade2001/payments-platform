@@ -3,6 +3,7 @@ package com.acme.payments.engine.internal.persistence;
 
 import com.acme.payments.engine.InstructedTransactionId;
 import com.acme.payments.engine.InstructedTransactionStatus;
+import com.acme.payments.engine.SchemeId;
 import iso.std.iso._20022.tech.xsd.pacs_008_001.CreditTransferTransaction73;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,8 +36,8 @@ public class InstructedTransactionEntity {
     @Column(name = "transaction_id", nullable = false, updatable = false)
     private String transactionId;
 
-    @Column(name = "scheme", nullable = false, updatable = false, length = 50)
-    private String scheme;
+    @Column(name = "scheme_id", nullable = false, updatable = false, length = 50)
+    private SchemeId schemeId;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "instruction", nullable = false, updatable = false, columnDefinition = "jsonb")

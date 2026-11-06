@@ -12,7 +12,7 @@ public interface TransactionMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "transactionId", source = "metadata.transactionId.value")
-    @Mapping(target = "scheme", source = "metadata.schemeId.value")
+    @Mapping(target = "schemeId", source = "metadata.schemeId")
     InstructedTransactionEntity toEntity(InstructedTransaction transaction);
 
     InstructedTransaction fromEntity(InstructedTransactionEntity entity);

@@ -8,7 +8,7 @@ public record ExecutionTransaction(
         ExecutionTransactionId id,
         InstructedTransactionId instructedTransactionId,
         TransactionId transactionId,
-        SchemeId scheme,
+        SchemeId schemeId,
         LocalDate executionDate,
         CreditTransferTransaction73 transaction,
         ExecutionStatus status

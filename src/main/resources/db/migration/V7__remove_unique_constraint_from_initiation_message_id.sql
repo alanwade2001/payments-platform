@@ -1,0 +1,2 @@
+ALTER TABLE initiation
+DROP CONSTRAINT uk_initiation_message_id;

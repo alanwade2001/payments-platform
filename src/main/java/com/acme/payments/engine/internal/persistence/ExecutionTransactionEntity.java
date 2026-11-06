@@ -2,6 +2,7 @@ package com.acme.payments.engine.internal.persistence;
 
 import com.acme.payments.engine.ExecutionStatus;
 import com.acme.payments.engine.ExecutionTransactionId;
+import com.acme.payments.engine.SchemeId;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -53,6 +54,13 @@ public class ExecutionTransactionEntity {
             length = 20
     )
     private ExecutionStatus status;
+
+    @Column(
+            name = "scheme_id",
+            nullable = false,
+            length = 20
+    )
+    private SchemeId schemeId;
 
     @Column(
             name = "created_at",
