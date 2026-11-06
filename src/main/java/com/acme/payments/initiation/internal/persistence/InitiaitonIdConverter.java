@@ -1,6 +1,6 @@
 package com.acme.payments.initiation.internal.persistence;
 
-import com.acme.payments.initiation.model.InitiationId;
+import com.acme.payments.initiation.InitiationId;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

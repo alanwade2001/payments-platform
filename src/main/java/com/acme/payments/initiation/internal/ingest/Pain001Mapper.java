@@ -10,6 +10,7 @@ import iso.std.iso._20022.tech.xsd.pain_001_001.PaymentInstruction44;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.util.ArrayList;
 
 @Component
 public class Pain001Mapper {
@@ -42,6 +43,9 @@ public class Pain001Mapper {
 
     private Payment mapPayment(PaymentInstruction44 paymentInstruction) {
 
+        var cache = new ArrayList<>(paymentInstruction.getCdtTrfTxInves());
+        paymentInstruction.getCdtTrfTxInves().clear();
+
         var payment = Payment.builder()
                 .paymentInformationId(
                         paymentInstruction.getPmtInfId())
@@ -56,9 +60,10 @@ public class Pain001Mapper {
                         paymentInstruction
                                 .getReqdExctnDt()
                                 .getDt())
+                .pmtInf(paymentInstruction)
                 .build();
 
-        paymentInstruction.getCdtTrfTxInves()
+        cache
                 .stream()
                 .map(this::mapTransaction)
                 .forEach(payment::addTransaction);
@@ -86,6 +91,7 @@ public class Pain001Mapper {
                                 .getCdtrAcct()
                                 .getId()
                                 .getIBAN())
+                .cdtTrfTxInf(transaction)
                 .build();
     }
 }

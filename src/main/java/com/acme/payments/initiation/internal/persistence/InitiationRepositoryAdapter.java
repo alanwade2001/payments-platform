@@ -1,8 +1,7 @@
 package com.acme.payments.initiation.internal.persistence;
 
 import com.acme.payments.initiation.model.Initiation;
-import com.acme.payments.initiation.model.InitiationId;
-import lombok.Data;
+import com.acme.payments.initiation.InitiationId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

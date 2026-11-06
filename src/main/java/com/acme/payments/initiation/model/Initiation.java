@@ -1,5 +1,6 @@
 package com.acme.payments.initiation.model;
 
+import com.acme.payments.initiation.InitiationId;
 import com.acme.payments.reference.CustomerId;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

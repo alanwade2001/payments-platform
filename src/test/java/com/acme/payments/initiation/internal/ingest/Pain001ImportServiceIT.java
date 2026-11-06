@@ -2,7 +2,7 @@ package com.acme.payments.initiation.internal.ingest;
 
 import com.acme.payments.initiation.internal.persistence.InitiationRepository;
 import com.acme.payments.initiation.model.Initiation;
-import com.acme.payments.initiation.model.InitiationId;
+import com.acme.payments.initiation.InitiationId;
 import com.acme.payments.reference.PostgresqlIntegrationTest;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -11,9 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,5 +52,7 @@ class Pain001ImportServiceIT extends PostgresqlIntegrationTest {
             assertThat( initiation.getPayments()).hasSize(1);
 
             assertThat( initiation.getPayments().getFirst().getId()).isPositive();
+
+            //Thread.sleep(Duration.ofSeconds(2));
     }
 }
