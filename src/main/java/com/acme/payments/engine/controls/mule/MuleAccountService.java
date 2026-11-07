@@ -1,6 +1,6 @@
 package com.acme.payments.engine.controls.mule;
 
-import com.acme.payments.engine.Iban;
+import com.acme.payments.model.Iban;
 import org.springframework.stereotype.Service;
 
 @Service

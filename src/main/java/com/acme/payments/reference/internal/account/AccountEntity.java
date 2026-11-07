@@ -1,6 +1,9 @@
-package com.acme.payments.reference.account;
+package com.acme.payments.reference.internal.account;
 
+import com.acme.payments.model.Iban;
+import com.acme.payments.reference.AccountId;
 import com.acme.payments.reference.AccountStatus;
+import com.acme.payments.reference.CustomerId;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,10 +20,10 @@ public class AccountEntity {
     private Long id;
 
     @Column(name = "customer_id", nullable = false)
-    private Long customerId;
+    private CustomerId customerId;
 
     @Column(nullable = false, unique = true)
-    private String iban;
+    private Iban iban;
 
     @Column(nullable = false, length = 3)
     private String currency;
@@ -28,4 +31,9 @@ public class AccountEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AccountStatus status;
+
+    public AccountId id() {
+        if (id == null) {return null;}
+        return new AccountId(this.id + "");
+    }
 }

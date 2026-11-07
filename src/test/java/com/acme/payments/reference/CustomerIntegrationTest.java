@@ -6,6 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -19,8 +21,10 @@ class CustomersIntegrationTest extends PostgresqlIntegrationTest {
 
     @Test
     void returnsCustomer() {
-        CustomerDetails customer =
+        Optional<CustomerDetails> result =
                 customers.getCustomer(new CustomerId("1"));
+
+        var customer = result.orElseThrow();
 
         assertThat(customer.customerId())
                 .isEqualTo(new CustomerId("1"));
@@ -34,8 +38,10 @@ class CustomersIntegrationTest extends PostgresqlIntegrationTest {
 
     @Test
     void returnsSuspendedCustomer() {
-        CustomerDetails customer =
+        var result =
                 customers.getCustomer(new CustomerId("2"));
+
+        var customer = result.orElseThrow();
 
         assertThat(customer.status())
                 .isEqualTo(CustomerStatus.SUSPENDED);
@@ -45,7 +51,7 @@ class CustomersIntegrationTest extends PostgresqlIntegrationTest {
     void throwsWhenCustomerDoesNotExist() {
         CustomerId id = new CustomerId("999");
 
-        assertThatThrownBy(() -> customers.getCustomer(id))
-                .isInstanceOf(CustomerNotFoundException.class);
+        assertThat(customers.getCustomer(id)).isEmpty();
+
     }
 }

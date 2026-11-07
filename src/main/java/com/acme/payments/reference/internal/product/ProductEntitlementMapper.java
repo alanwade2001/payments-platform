@@ -1,4 +1,4 @@
-package com.acme.payments.reference.product;
+package com.acme.payments.reference.internal.product;
 
 import com.acme.payments.reference.CustomerId;
 import com.acme.payments.reference.ProductEntitlement;

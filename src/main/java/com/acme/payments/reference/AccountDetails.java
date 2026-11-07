@@ -1,5 +1,7 @@
 package com.acme.payments.reference;
 
+import com.acme.payments.model.Iban;
+
 import java.util.Currency;
 
 public record AccountDetails(

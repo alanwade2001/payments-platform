@@ -1,4 +1,4 @@
-package com.acme.payments.reference.product;
+package com.acme.payments.reference.internal.product;
 
 import com.acme.payments.reference.*;
 import lombok.RequiredArgsConstructor;
@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-class ProductEntitlementService
-        implements ProductEntitlements {
+class ProductEntitlementServiceImpl
+        implements ProductEntitlements, ProductEntitlementService {
 
     private final ProductEntitlementRepository repository;
     private final ProductEntitlementMapper mapper;
@@ -26,5 +26,16 @@ class ProductEntitlementService
                         new ProductEntitlementNotFoundException(
                                 customerId,
                                 productCode));
+    }
+
+    @Override
+    public ProductEntitlementId addProductEntitlement(CustomerId customerId, ProductCode productCode) {
+        var entity = ProductEntitlementEntity.builder()
+                .customerId(customerId)
+                .productCode(productCode)
+                .status(EntitlementStatus.ACTIVE)
+                .build();
+
+        return repository.save(entity).id();
     }
 }

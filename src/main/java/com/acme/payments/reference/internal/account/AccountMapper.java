@@ -1,9 +1,9 @@
-package com.acme.payments.reference.account;
+package com.acme.payments.reference.internal.account;
 
+import com.acme.payments.model.Iban;
 import com.acme.payments.reference.AccountDetails;
 import com.acme.payments.reference.AccountId;
 import com.acme.payments.reference.CustomerId;
-import com.acme.payments.reference.Iban;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

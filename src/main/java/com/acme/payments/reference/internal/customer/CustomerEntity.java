@@ -1,5 +1,6 @@
-package com.acme.payments.reference.customer;
+package com.acme.payments.reference.internal.customer;
 
+import com.acme.payments.reference.CustomerId;
 import com.acme.payments.reference.CustomerStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,4 +23,9 @@ public class CustomerEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CustomerStatus status;
+
+    public CustomerId id() {
+        if (id == null) {return null;}
+        return new CustomerId(id + "");
+    }
 }

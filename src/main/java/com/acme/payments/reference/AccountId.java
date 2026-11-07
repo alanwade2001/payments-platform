@@ -1,17 +1,14 @@
 package com.acme.payments.reference;
 
+import com.acme.payments.reference.internal.ReferenceTypes;
 import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 
-public record AccountId(String value) {
-
-    public String reference() {
-        return "ACCT-" + value;
-    }
+public record AccountId(String value) implements ReferenceId {
 
     @Override
-    public String toString() {
-        return reference();
+    public ReferenceTypes type() {
+        return ReferenceTypes.Account;
     }
 }

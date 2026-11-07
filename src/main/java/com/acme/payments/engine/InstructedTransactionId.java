@@ -1,7 +1,10 @@
 package com.acme.payments.engine;
 
-public record InstructedTransactionId(String value) {
-    public String reference() {
-        return "INTX-" + value;
+import com.acme.payments.engine.internal.EngineTypes;
+
+public record InstructedTransactionId(String value) implements EngineId{
+    @Override
+    public EngineTypes type() {
+        return EngineTypes.InstructedTransaction;
     }
 }

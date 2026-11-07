@@ -1,6 +1,8 @@
 package com.acme.payments.reference;
 
+import java.util.Optional;
+
 public interface Customers {
-    CustomerDetails getCustomer(CustomerId customerId);
+    Optional<CustomerDetails> getCustomer(CustomerId customerId);
 
 }

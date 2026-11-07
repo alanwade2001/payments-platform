@@ -1,7 +1,10 @@
 package com.acme.payments.initiation;
 
-public record InitiationId(String value) {
-    public String reference() {
-        return "INIT-" + value;
+import com.acme.payments.initiation.internal.InitiationTypes;
+
+public record InitiationId(String value) implements InitiationBaseId {
+    @Override
+    public InitiationTypes type() {
+        return InitiationTypes.Initiation;
     }
 }

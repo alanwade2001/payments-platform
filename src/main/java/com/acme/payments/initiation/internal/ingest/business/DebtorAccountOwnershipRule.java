@@ -1,10 +1,9 @@
 package com.acme.payments.initiation.internal.ingest.business;
 
 import com.acme.payments.initiation.internal.ingest.Pain001CustomerIdResolver;
-import com.acme.payments.initiation.internal.ingest.content.Pain001ContentRule;
+import com.acme.payments.model.Iban;
 import com.acme.payments.reference.AccountStatus;
 import com.acme.payments.reference.Accounts;
-import com.acme.payments.reference.Iban;
 import iso.std.iso._20022.tech.xsd.pain_001_001.Document;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

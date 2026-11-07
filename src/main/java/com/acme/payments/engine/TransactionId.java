@@ -1,7 +1,10 @@
 package com.acme.payments.engine;
 
-public record TransactionId(String value) {
-    public String reference() {
-        return "TX-" + value;
+import com.acme.payments.engine.internal.EngineTypes;
+
+public record TransactionId(String value) implements EngineId{
+    @Override
+    public EngineTypes type() {
+        return EngineTypes.Transaction;
     }
 }

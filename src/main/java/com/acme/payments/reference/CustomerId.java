@@ -1,12 +1,11 @@
 package com.acme.payments.reference;
 
-public record CustomerId(String value) {
-    public String reference() {
-        return "CUST-" + value;
-    }
+import com.acme.payments.reference.internal.ReferenceTypes;
+
+public record CustomerId(String value) implements ReferenceId {
 
     @Override
-    public String toString() {
-        return reference();
+    public ReferenceTypes type() {
+        return ReferenceTypes.Customer;
     }
 }

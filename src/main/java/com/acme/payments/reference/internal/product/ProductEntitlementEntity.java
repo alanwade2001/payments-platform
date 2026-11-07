@@ -1,7 +1,9 @@
-package com.acme.payments.reference.product;
+package com.acme.payments.reference.internal.product;
 
+import com.acme.payments.reference.CustomerId;
 import com.acme.payments.reference.EntitlementStatus;
 import com.acme.payments.reference.ProductCode;
+import com.acme.payments.reference.ProductEntitlementId;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,7 +25,7 @@ public class ProductEntitlementEntity {
     private Long id;
 
     @Column(name = "customer_id", nullable = false)
-    private Long customerId;
+    private CustomerId customerId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "product_code", nullable = false)
@@ -32,4 +34,9 @@ public class ProductEntitlementEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EntitlementStatus status;
+
+    public ProductEntitlementId id() {
+        if (id == null) {return null;}
+        return new ProductEntitlementId(id + "");
+    }
 }

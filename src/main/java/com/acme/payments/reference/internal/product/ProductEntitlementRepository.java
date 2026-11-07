@@ -1,7 +1,6 @@
-package com.acme.payments.reference.product;
+package com.acme.payments.reference.internal.product;
 
 import com.acme.payments.reference.ProductCode;
-import com.acme.payments.reference.ProductEntitlement;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
