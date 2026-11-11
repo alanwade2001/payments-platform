@@ -8,6 +8,7 @@ import java.time.LocalDate;
 
 public record InstructedTransaction(
         InstructionMetadata metadata,
+        InstructedTransactionId id,
         CreditTransferTransaction73 cdtTrfTxInf
 ) {
     public Iban creditorIban() {

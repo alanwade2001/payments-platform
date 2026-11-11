@@ -3,6 +3,7 @@ package com.acme.payments.engine.internal.persistence;
 import com.acme.payments.engine.ExecutionTransaction;
 import com.acme.payments.engine.ExecutionTransactionId;
 import com.acme.payments.engine.InstructedTransaction;
+import com.acme.payments.engine.InstructedTransactionId;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -34,5 +35,13 @@ public interface TransactionMapper {
         return Long.parseLong(id.value());
     }
 
+    default InstructedTransactionId mapFromLong2(Long id) {
+        if(id == null) return null;
+        return new InstructedTransactionId(id + "");
+    }
 
+    default Long map( InstructedTransactionId id) {
+        if(id == null) return null;
+        return Long.parseLong(id.value());
+    }
 }

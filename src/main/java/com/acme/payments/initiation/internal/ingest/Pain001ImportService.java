@@ -1,5 +1,6 @@
 package com.acme.payments.initiation.internal.ingest;
 
+import com.acme.payments.initiation.InitiationDetails;
 import com.acme.payments.initiation.InitiationImported;
 import com.acme.payments.initiation.internal.persistence.InitiationRepository;
 import com.acme.payments.initiation.model.Initiation;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -61,5 +63,11 @@ public class Pain001ImportService {
                     "pain.001 failed XML mapping",
                     exception);
         }
+    }
+
+    public Optional<InitiationDetails> getInitiation(InitiationId id) {
+        return initiationRepository.findById(id).map(i->{
+            return new InitiationDetails(i.id(), i.getMessageId(), i.getStatus(), i.getReceivedAt());
+        });
     }
 }

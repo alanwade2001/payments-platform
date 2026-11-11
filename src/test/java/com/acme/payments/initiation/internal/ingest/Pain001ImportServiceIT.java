@@ -3,7 +3,7 @@ package com.acme.payments.initiation.internal.ingest;
 import com.acme.payments.initiation.internal.persistence.InitiationRepository;
 import com.acme.payments.initiation.model.Initiation;
 import com.acme.payments.initiation.InitiationId;
-import com.acme.payments.reference.PostgresqlIntegrationTest;
+import com.acme.payments.PostgresqlIntegrationTest;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -36,6 +36,17 @@ class AccountServiceImpl implements Accounts, AccountService {
     }
 
     @Override
+    public Optional<AccountDetails> getAccount(IdOrName idOrName) {
+        var result = getAccount(new AccountId(idOrName.idOrName()));
+        if (result.isPresent()) {
+            return result;
+        }
+
+        Iban iban = new Iban(idOrName.idOrName());
+        return repository.findByIban(iban).map(mapper::toDetails);
+    }
+
+    @Override
     public AccountId addAccount(CustomerId customerId, Iban iban, String currency) {
         var entity = AccountEntity.builder()
                 .currency(currency)

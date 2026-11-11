@@ -1,4 +1,4 @@
-package com.acme.payments.reference.internal.admin;
+package com.acme.payments.reference;
 
 public record CreateCustomerRequest(
         String name

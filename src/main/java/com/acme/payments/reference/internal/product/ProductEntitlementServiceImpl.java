@@ -4,6 +4,8 @@ import com.acme.payments.reference.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 class ProductEntitlementServiceImpl
@@ -37,5 +39,10 @@ class ProductEntitlementServiceImpl
                 .build();
 
         return repository.save(entity).id();
+    }
+
+    @Override
+    public List<ProductEntitlement> getProductEntitlements(CustomerId customerId) {
+        return repository.findAllByCustomerId( customerId).stream().map(mapper::toEntitlement).toList();
     }
 }

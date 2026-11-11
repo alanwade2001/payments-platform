@@ -15,6 +15,13 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
     Optional<AccountEntity> findByIbanAndCustomerId(Iban iban, CustomerId customerId);
 
     default Optional<AccountEntity> findById(AccountId id){
-        return findById(Long.parseLong(id.value()));
+        try{
+            return findById(Long.parseLong(id.value()));
+        } catch(NumberFormatException e){
+            return Optional.empty();
+        }
     }
+
+
+    Optional<AccountEntity> findByIban(Iban iban);
 }

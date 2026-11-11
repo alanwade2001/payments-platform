@@ -20,7 +20,12 @@ public class InitiationRepositoryAdapter implements InitiationRepository {
 
     @Override
     public Optional<Initiation> findById(InitiationId id) {
-        Long lid = Long.parseLong(id.value());
-        return jpaInitiationRepository.findById(lid);
+        try {
+            Long lid = Long.parseLong(id.value());
+            return jpaInitiationRepository.findById(lid);
+        }
+        catch(NumberFormatException e) {
+            return Optional.empty();
+        }
     }
 }

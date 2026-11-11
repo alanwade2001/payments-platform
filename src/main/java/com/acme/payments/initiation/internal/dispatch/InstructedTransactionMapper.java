@@ -36,6 +36,7 @@ public class InstructedTransactionMapper {
 
         return new InstructedTransaction(
                 metadata,
+                null,
                 pacs008Transaction
         );
     }

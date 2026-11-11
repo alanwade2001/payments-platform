@@ -1,7 +1,7 @@
 package com.acme.payments.initiation.internal.ingest;
 
 import com.acme.payments.initiation.model.Initiation;
-import com.acme.payments.initiation.model.InitiationStatus;
+import com.acme.payments.initiation.InitiationStatus;
 import com.acme.payments.initiation.model.Payment;
 import com.acme.payments.initiation.model.Transaction;
 import iso.std.iso._20022.tech.xsd.pain_001_001.CreditTransferTransaction61;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class Pain001Mapper {

@@ -1,4 +1,4 @@
-package com.acme.payments.reference;
+package com.acme.payments;
 
 import org.springframework.context.annotation.Import;
 

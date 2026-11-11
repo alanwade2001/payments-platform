@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/admin/reference")
 @RequiredArgsConstructor
@@ -23,9 +25,10 @@ public class CustomerAdminController {
         return customerService.create(request.name());
     }
 
-    @GetMapping("/customers/{customerId}")
-    public ResponseEntity<CustomerDetails> getCustomerDetails(@PathVariable("customerId") CustomerId customerId) {
-        var result = customerService.getCustomer(customerId);
+
+    @GetMapping("/customers/{customerIdOrName}")
+    public ResponseEntity<CustomerDetails> getCustomerDetails(@PathVariable("customerIdOrName") IdOrName idOrName) {
+        var result = customerService.getCustomer(idOrName);
         return ResponseEntity.of(result);
     }
 
@@ -41,15 +44,15 @@ public class CustomerAdminController {
         );
     }
 
-    @GetMapping("/accounts/{accountId}")
-    public ResponseEntity<AccountDetails> getAccountDetails(@PathVariable("accountId") AccountId accountId) {
-        var result = accountService.getAccount(accountId);
+    @GetMapping("/accounts/{idOrIban}")
+    public ResponseEntity<AccountDetails> getAccountDetails(@PathVariable("idOrIban") IdOrName idOrIban) {
+        var result = accountService.getAccount(idOrIban);
         return ResponseEntity.of(result);
     }
 
 
 
-    @PostMapping("/{customerId}/productEntitlements")
+    @PostMapping("/customers/{customerId}/productEntitlements")
     public ProductEntitlementId addProductEntitlement(
             @PathVariable CustomerId customerId,
             @RequestBody CreateProductEntitlementRequest request) {
@@ -58,5 +61,12 @@ public class CustomerAdminController {
                 customerId,
                 ProductCode.valueOf(request.productCode())
         );
+    }
+
+    @GetMapping("/customers/{customerId}/productEntitlements")
+    public List<ProductEntitlement> getProductEntitlements(
+            @PathVariable CustomerId customerId) {
+
+        return productEntitlementService.getProductEntitlements(customerId);
     }
 }

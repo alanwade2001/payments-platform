@@ -1,4 +1,4 @@
-package com.acme.payments.initiation.model;
+package com.acme.payments.initiation;
 
 public enum InitiationStatus {
     ACCEPTED,
