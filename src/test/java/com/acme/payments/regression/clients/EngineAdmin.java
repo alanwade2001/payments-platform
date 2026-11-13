@@ -15,7 +15,6 @@ import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
 public class EngineAdmin {
 
     private final TestApiClient testApiClient;

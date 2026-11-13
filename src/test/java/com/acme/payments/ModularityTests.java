@@ -3,6 +3,8 @@ package com.acme.payments;
 import org.junit.jupiter.api.Test;
 import org.springframework.modulith.core.ApplicationModules;
 
+
+
 class ModularityTests {
 
     @Test
@@ -11,4 +13,15 @@ class ModularityTests {
         ApplicationModules.of(PaymentsApplication.class)
                 .verify();
     }
+
+    @Test
+    void printsModules() {
+
+        ApplicationModules modules =
+                ApplicationModules.of(PaymentsApplication.class);
+
+        modules.forEach(System.out::println);
+    }
+
+
 }

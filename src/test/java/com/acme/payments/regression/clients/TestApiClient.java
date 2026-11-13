@@ -15,7 +15,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 @RequiredArgsConstructor
-@Component
 public class TestApiClient {
 
     private final MockMvc mockMvc;

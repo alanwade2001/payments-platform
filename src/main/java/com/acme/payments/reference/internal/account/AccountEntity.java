@@ -4,6 +4,7 @@ import com.acme.payments.model.Iban;
 import com.acme.payments.reference.AccountId;
 import com.acme.payments.reference.AccountStatus;
 import com.acme.payments.reference.CustomerId;
+import com.acme.payments.reference.internal.CustomerIdConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +20,7 @@ public class AccountEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Convert(converter = CustomerIdConverter.class)
     @Column(name = "customer_id", nullable = false)
     private CustomerId customerId;
 

@@ -13,7 +13,6 @@ import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
 public class ReferenceAdmin {
 
     private final TestApiClient testApiClient;

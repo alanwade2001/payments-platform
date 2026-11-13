@@ -4,6 +4,7 @@ import com.acme.payments.reference.CustomerId;
 import com.acme.payments.reference.EntitlementStatus;
 import com.acme.payments.reference.ProductCode;
 import com.acme.payments.reference.ProductEntitlementId;
+import com.acme.payments.reference.internal.CustomerIdConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +25,7 @@ public class ProductEntitlementEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Convert(converter = CustomerIdConverter.class)
     @Column(name = "customer_id", nullable = false)
     private CustomerId customerId;
 

@@ -2,6 +2,7 @@ package com.acme.payments.initiation.model;
 
 import com.acme.payments.initiation.InitiationId;
 import com.acme.payments.initiation.InitiationStatus;
+import com.acme.payments.initiation.internal.persistence.CustomerIdConverter;
 import com.acme.payments.reference.CustomerId;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -23,6 +24,7 @@ public class Initiation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Convert(converter = CustomerIdConverter.class)
     @Column(nullable = false)
     private CustomerId customerId;
 

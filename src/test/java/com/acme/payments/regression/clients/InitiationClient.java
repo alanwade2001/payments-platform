@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@Component
 public class InitiationClient {
     private final TestApiClient testApiClient;
     private final String base = "/api/initiation";

@@ -9,6 +9,6 @@ import org.springframework.context.annotation.Import;
 @CucumberContextConfiguration
 @SpringBootTest
 @AutoConfigureMockMvc
-@Import({PostgresqlTestConfiguration.class})
+@Import({PostgresqlTestConfiguration.class, RegressionTestConfiguration.class})
 public class CucumberSpringConfiguration {
 }

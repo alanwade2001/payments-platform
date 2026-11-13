@@ -4,7 +4,7 @@ import com.acme.payments.reference.CustomerId;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
-@Converter(autoApply = true)
+@Converter
 public class CustomerIdConverter implements AttributeConverter<CustomerId, Long> {
     @Override
     public Long convertToDatabaseColumn(CustomerId attribute) {

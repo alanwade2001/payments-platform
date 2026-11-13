@@ -4,8 +4,8 @@ import com.acme.payments.initiation.InitiationId;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
-@Converter(autoApply = true)
-public class InitiaitonIdConverter implements AttributeConverter<InitiationId, Long> {
+@Converter
+public class InitiationIdConverter implements AttributeConverter<InitiationId, Long> {
     @Override
     public Long convertToDatabaseColumn(InitiationId attribute) {
         if( attribute == null) return null;
