@@ -1,4 +1,4 @@
-package com.acme.payments.regression;
+package com.acme.payments.regression.states;
 
 import io.cucumber.spring.ScenarioScope;
 import lombok.Data;

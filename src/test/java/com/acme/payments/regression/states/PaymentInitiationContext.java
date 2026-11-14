@@ -1,4 +1,4 @@
-package com.acme.payments.regression;
+package com.acme.payments.regression.states;
 
 import com.acme.payments.engine.ExecutionTransaction;
 import com.acme.payments.engine.InstructedTransaction;
@@ -6,9 +6,9 @@ import com.acme.payments.initiation.InitiationDetails;
 import com.acme.payments.initiation.InitiationId;
 import com.acme.payments.reference.AccountDetails;
 import com.acme.payments.reference.CustomerDetails;
+import com.acme.payments.regression.Pain001TestData;
 import io.cucumber.spring.ScenarioScope;
 import lombok.Data;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -16,7 +16,7 @@ import java.util.List;
 public class ExecutionService {
 
     private final SchemeRegistry schemeRegistry;
-    private final ExecutionTransactionRepository transactionRepository;
+    private final ExecutionStatusService executionStatusService;
 
 
     public void execute(
@@ -67,13 +67,6 @@ public class ExecutionService {
             ExecutionStatus newStatus,
             ExecutionStatus oldStatus) {
 
-        var ids = transactions.stream().map(ExecutionTransaction::id).toList();
-
-        // update through repository
-        int updated = transactionRepository.updateStatusById(ids, newStatus, oldStatus);
-
-        if(updated != transactions.size()) {
-            throw new RuntimeException("Not all transactions were updated as expected");
-        }
+        executionStatusService.markAs(transactions, newStatus, oldStatus);
     }
 }

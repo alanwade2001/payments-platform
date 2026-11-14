@@ -2,9 +2,7 @@ package com.acme.payments.engine.internal;
 
 import com.acme.payments.engine.ExecutionStatus;
 import com.acme.payments.engine.ExecutionTransaction;
-import com.acme.payments.engine.ExecutionTransactionId;
 import com.acme.payments.engine.SchemeId;
-import com.acme.payments.engine.internal.persistence.ExecutionTransactionRepository;
 import com.acme.payments.engine.schemes.Scheme;
 import com.acme.payments.engine.schemes.SchemeRegistry;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,10 +25,10 @@ class ExecutionServiceTest {
     private SchemeRegistry schemeRegistry;
 
     @Mock
-    private ExecutionTransactionRepository transactionRepository;
+    private Scheme scheme;
 
     @Mock
-    private Scheme scheme;
+    private ExecutionStatusService executionStatusService;
 
     private ExecutionService executionService;
 
@@ -38,66 +36,49 @@ class ExecutionServiceTest {
     void setUp() {
         executionService = new ExecutionService(
                 schemeRegistry,
-                transactionRepository);
+                executionStatusService);
     }
 
     @Test
     void shouldDoNothingWhenThereAreNoTransactions() {
-
         executionService.execute(
                 mock(SchemeId.class),
                 List.of());
 
         verifyNoInteractions(
                 schemeRegistry,
-                transactionRepository,
-                scheme);
+                scheme,
+                executionStatusService);
     }
 
     @Test
     void shouldExecuteEntireBatchSuccessfully() {
-
         SchemeId schemeId = mock(SchemeId.class);
 
-        ExecutionTransactionId id1 = mock(ExecutionTransactionId.class);
-        ExecutionTransactionId id2 = mock(ExecutionTransactionId.class);
+        ExecutionTransaction transaction1 =
+                mock(ExecutionTransaction.class);
 
-        ExecutionTransaction tx1 = mock(ExecutionTransaction.class);
-        ExecutionTransaction tx2 = mock(ExecutionTransaction.class);
+        ExecutionTransaction transaction2 =
+                mock(ExecutionTransaction.class);
 
-        when(tx1.id()).thenReturn(id1);
-        when(tx2.id()).thenReturn(id2);
-
-        List<ExecutionTransaction> transactions = List.of(tx1, tx2);
-        List<ExecutionTransactionId> transactionIds = List.of(id1, id2);
-
-        when(transactionRepository.updateStatusById(
-                transactionIds,
-                ExecutionStatus.EXECUTING,
-                ExecutionStatus.READY))
-                .thenReturn(2);
+        List<ExecutionTransaction> transactions =
+                List.of(transaction1, transaction2);
 
         when(schemeRegistry.get(schemeId))
                 .thenReturn(scheme);
-
-        when(transactionRepository.updateStatusById(
-                transactionIds,
-                ExecutionStatus.EXECUTED,
-                ExecutionStatus.EXECUTING))
-                .thenReturn(2);
 
         executionService.execute(
                 schemeId,
                 transactions);
 
         InOrder inOrder = inOrder(
-                transactionRepository,
+                executionStatusService,
                 schemeRegistry,
                 scheme);
 
-        inOrder.verify(transactionRepository)
-                .updateStatusById(
-                        transactionIds,
+        inOrder.verify(executionStatusService)
+                .markAs(
+                        transactions,
                         ExecutionStatus.EXECUTING,
                         ExecutionStatus.READY);
 
@@ -107,143 +88,41 @@ class ExecutionServiceTest {
         inOrder.verify(scheme)
                 .execute(transactions);
 
-        inOrder.verify(transactionRepository)
-                .updateStatusById(
-                        transactionIds,
+        inOrder.verify(executionStatusService)
+                .markAs(
+                        transactions,
                         ExecutionStatus.EXECUTED,
                         ExecutionStatus.EXECUTING);
 
-        verify(transactionRepository, never())
-                .updateStatusById(
-                        transactionIds,
+        verify(executionStatusService, never())
+                .markAs(
+                        transactions,
                         ExecutionStatus.FAILED,
                         ExecutionStatus.EXECUTING);
+
+        verifyNoMoreInteractions(
+                executionStatusService,
+                schemeRegistry,
+                scheme);
     }
 
     @Test
     void shouldFailWithoutExecutingSchemeWhenEntireBatchCannotBeMarkedExecuting() {
-
         SchemeId schemeId = mock(SchemeId.class);
 
-        ExecutionTransactionId id1 = mock(ExecutionTransactionId.class);
-        ExecutionTransactionId id2 = mock(ExecutionTransactionId.class);
+        List<ExecutionTransaction> transactions =
+                transactions();
 
-        ExecutionTransaction tx1 = mock(ExecutionTransaction.class);
-        ExecutionTransaction tx2 = mock(ExecutionTransaction.class);
+        RuntimeException transitionFailure =
+                new RuntimeException(
+                        "Unable to mark entire batch as EXECUTING");
 
-        when(tx1.id()).thenReturn(id1);
-        when(tx2.id()).thenReturn(id2);
-
-        List<ExecutionTransaction> transactions = List.of(tx1, tx2);
-        List<ExecutionTransactionId> transactionIds = List.of(id1, id2);
-
-        when(transactionRepository.updateStatusById(
-                transactionIds,
-                ExecutionStatus.EXECUTING,
-                ExecutionStatus.READY))
-                .thenReturn(1);
-
-        assertThrows(
-                RuntimeException.class,
-                () -> executionService.execute(
-                        schemeId,
-                        transactions));
-
-        verifyNoInteractions(schemeRegistry);
-        verifyNoInteractions(scheme);
-
-        verify(transactionRepository, never())
-                .updateStatusById(
-                        transactionIds,
-                        ExecutionStatus.EXECUTED,
-                        ExecutionStatus.EXECUTING);
-
-        verify(transactionRepository, never())
-                .updateStatusById(
-                        transactionIds,
-                        ExecutionStatus.FAILED,
-                        ExecutionStatus.EXECUTING);
-    }
-
-
-    @Test
-    void shouldFailWhenEntireBatchCannotBeMarkedExecuted() {
-
-        SchemeId schemeId = mock(SchemeId.class);
-
-        ExecutionTransactionId id1 = mock(ExecutionTransactionId.class);
-        ExecutionTransactionId id2 = mock(ExecutionTransactionId.class);
-
-        ExecutionTransaction tx1 = mock(ExecutionTransaction.class);
-        ExecutionTransaction tx2 = mock(ExecutionTransaction.class);
-
-        when(tx1.id()).thenReturn(id1);
-        when(tx2.id()).thenReturn(id2);
-
-        List<ExecutionTransaction> transactions = List.of(tx1, tx2);
-        List<ExecutionTransactionId> transactionIds = List.of(id1, id2);
-
-        when(transactionRepository.updateStatusById(
-                transactionIds,
-                ExecutionStatus.EXECUTING,
-                ExecutionStatus.READY))
-                .thenReturn(2);
-
-        when(schemeRegistry.get(schemeId))
-                .thenReturn(scheme);
-
-        when(transactionRepository.updateStatusById(
-                transactionIds,
-                ExecutionStatus.EXECUTED,
-                ExecutionStatus.EXECUTING))
-                .thenReturn(1);
-
-        assertThrows(
-                RuntimeException.class,
-                () -> executionService.execute(
-                        schemeId,
-                        transactions));
-
-        verify(scheme).execute(transactions);
-    }
-
-    @Test
-    void shouldMarkEntireBatchFailedWhenSchemeExecutionFails() {
-        SchemeId schemeId = mock(SchemeId.class);
-
-        ExecutionTransactionId id1 = mock(ExecutionTransactionId.class);
-        ExecutionTransactionId id2 = mock(ExecutionTransactionId.class);
-
-        ExecutionTransaction tx1 = mock(ExecutionTransaction.class);
-        ExecutionTransaction tx2 = mock(ExecutionTransaction.class);
-
-        when(tx1.id()).thenReturn(id1);
-        when(tx2.id()).thenReturn(id2);
-
-        List<ExecutionTransaction> transactions = List.of(tx1, tx2);
-        List<ExecutionTransactionId> transactionIds = List.of(id1, id2);
-
-        when(transactionRepository.updateStatusById(
-                transactionIds,
-                ExecutionStatus.EXECUTING,
-                ExecutionStatus.READY))
-                .thenReturn(2);
-
-        when(schemeRegistry.get(schemeId))
-                .thenReturn(scheme);
-
-        RuntimeException schemeFailure =
-                new RuntimeException("SEPA CT execution failed");
-
-        doThrow(schemeFailure)
-                .when(scheme)
-                .execute(transactions);
-
-        when(transactionRepository.updateStatusById(
-                transactionIds,
-                ExecutionStatus.FAILED,
-                ExecutionStatus.EXECUTING))
-                .thenReturn(2);
+        doThrow(transitionFailure)
+                .when(executionStatusService)
+                .markAs(
+                        transactions,
+                        ExecutionStatus.EXECUTING,
+                        ExecutionStatus.READY);
 
         RuntimeException thrown = assertThrows(
                 RuntimeException.class,
@@ -251,16 +130,62 @@ class ExecutionServiceTest {
                         schemeId,
                         transactions));
 
-        assertSame(schemeFailure, thrown);
+        assertSame(
+                transitionFailure,
+                thrown);
 
-        InOrder inOrder = inOrder(
-                transactionRepository,
+        verify(executionStatusService)
+                .markAs(
+                        transactions,
+                        ExecutionStatus.EXECUTING,
+                        ExecutionStatus.READY);
+
+        verifyNoInteractions(
                 schemeRegistry,
                 scheme);
 
-        inOrder.verify(transactionRepository)
-                .updateStatusById(
-                        transactionIds,
+        verifyNoMoreInteractions(
+                executionStatusService);
+    }
+
+
+
+    @Test
+    void shouldMarkEntireBatchFailedWhenSchemeExecutionFails() {
+        SchemeId schemeId = mock(SchemeId.class);
+
+        List<ExecutionTransaction> transactions =
+                transactions();
+
+        RuntimeException schemeFailure =
+                new RuntimeException(
+                        "SEPA CT execution failed");
+
+        when(schemeRegistry.get(schemeId))
+                .thenReturn(scheme);
+
+        doThrow(schemeFailure)
+                .when(scheme)
+                .execute(transactions);
+
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> executionService.execute(
+                        schemeId,
+                        transactions));
+
+        assertSame(
+                schemeFailure,
+                thrown);
+
+        InOrder inOrder = inOrder(
+                executionStatusService,
+                schemeRegistry,
+                scheme);
+
+        inOrder.verify(executionStatusService)
+                .markAs(
+                        transactions,
                         ExecutionStatus.EXECUTING,
                         ExecutionStatus.READY);
 
@@ -270,73 +195,160 @@ class ExecutionServiceTest {
         inOrder.verify(scheme)
                 .execute(transactions);
 
-        inOrder.verify(transactionRepository)
-                .updateStatusById(
-                        transactionIds,
+        inOrder.verify(executionStatusService)
+                .markAs(
+                        transactions,
                         ExecutionStatus.FAILED,
                         ExecutionStatus.EXECUTING);
 
-        verify(transactionRepository, never())
-                .updateStatusById(
-                        transactionIds,
+        verify(executionStatusService, never())
+                .markAs(
+                        transactions,
                         ExecutionStatus.EXECUTED,
                         ExecutionStatus.EXECUTING);
+
+        verifyNoMoreInteractions(
+                executionStatusService,
+                schemeRegistry,
+                scheme);
     }
 
     @Test
     void shouldFailWhenEntireBatchCannotBeMarkedFailed() {
+
         SchemeId schemeId = mock(SchemeId.class);
 
-        ExecutionTransactionId id1 = mock(ExecutionTransactionId.class);
-        ExecutionTransactionId id2 = mock(ExecutionTransactionId.class);
+        List<ExecutionTransaction> transactions =
+                transactions();
 
-        ExecutionTransaction tx1 = mock(ExecutionTransaction.class);
-        ExecutionTransaction tx2 = mock(ExecutionTransaction.class);
+        RuntimeException schemeFailure =
+                new RuntimeException(
+                        "SEPA CT execution failed");
 
-        when(tx1.id()).thenReturn(id1);
-        when(tx2.id()).thenReturn(id2);
-
-        List<ExecutionTransaction> transactions = List.of(tx1, tx2);
-        List<ExecutionTransactionId> transactionIds = List.of(id1, id2);
-
-        when(transactionRepository.updateStatusById(
-                transactionIds,
-                ExecutionStatus.EXECUTING,
-                ExecutionStatus.READY))
-                .thenReturn(2);
+        RuntimeException statusFailure =
+                new RuntimeException(
+                        "Unable to mark entire batch as FAILED");
 
         when(schemeRegistry.get(schemeId))
                 .thenReturn(scheme);
 
-        RuntimeException schemeFailure =
-                new RuntimeException("SEPA CT execution failed");
+        // READY -> EXECUTING succeeds
+        doNothing()
+                .when(executionStatusService)
+                .markAs(
+                        transactions,
+                        ExecutionStatus.EXECUTING,
+                        ExecutionStatus.READY);
 
+        // Scheme execution fails
         doThrow(schemeFailure)
                 .when(scheme)
                 .execute(transactions);
 
-        when(transactionRepository.updateStatusById(
-                transactionIds,
-                ExecutionStatus.FAILED,
-                ExecutionStatus.EXECUTING))
-                .thenReturn(1);
+        // EXECUTING -> FAILED also fails
+        doThrow(statusFailure)
+                .when(executionStatusService)
+                .markAs(
+                        transactions,
+                        ExecutionStatus.FAILED,
+                        ExecutionStatus.EXECUTING);
 
-        assertThrows(
+        RuntimeException thrown = assertThrows(
                 RuntimeException.class,
                 () -> executionService.execute(
                         schemeId,
                         transactions));
 
-        verify(transactionRepository)
-                .updateStatusById(
-                        transactionIds,
+        assertSame(statusFailure, thrown);
+
+        InOrder inOrder = inOrder(
+                executionStatusService,
+                schemeRegistry,
+                scheme);
+
+        inOrder.verify(executionStatusService)
+                .markAs(
+                        transactions,
+                        ExecutionStatus.EXECUTING,
+                        ExecutionStatus.READY);
+
+        inOrder.verify(schemeRegistry)
+                .get(schemeId);
+
+        inOrder.verify(scheme)
+                .execute(transactions);
+
+        inOrder.verify(executionStatusService)
+                .markAs(
+                        transactions,
                         ExecutionStatus.FAILED,
                         ExecutionStatus.EXECUTING);
 
-        verify(transactionRepository, never())
-                .updateStatusById(
-                        transactionIds,
+        verify(executionStatusService, never())
+                .markAs(
+                        transactions,
                         ExecutionStatus.EXECUTED,
                         ExecutionStatus.EXECUTING);
+    }
+
+    @Test
+    void shouldFailWhenEntireBatchCannotBeMarkedExecuted() {
+
+        SchemeId schemeId = mock(SchemeId.class);
+        List<ExecutionTransaction> transactions = transactions();
+
+        RuntimeException transitionFailure =
+                new RuntimeException(
+                        "Unable to mark entire batch as EXECUTED");
+
+        when(schemeRegistry.get(schemeId))
+                .thenReturn(scheme);
+
+        // First transition succeeds
+        doNothing()
+                .when(executionStatusService)
+                .markAs(
+                        transactions,
+                        ExecutionStatus.EXECUTING,
+                        ExecutionStatus.READY);
+
+        // Final transition fails
+        doThrow(transitionFailure)
+                .when(executionStatusService)
+                .markAs(
+                        transactions,
+                        ExecutionStatus.EXECUTED,
+                        ExecutionStatus.EXECUTING);
+
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> executionService.execute(
+                        schemeId,
+                        transactions));
+
+        assertSame(transitionFailure, thrown);
+
+        verify(executionStatusService).markAs(
+                transactions,
+                ExecutionStatus.EXECUTING,
+                ExecutionStatus.READY);
+
+        verify(scheme).execute(transactions);
+
+        verify(executionStatusService).markAs(
+                transactions,
+                ExecutionStatus.EXECUTED,
+                ExecutionStatus.EXECUTING);
+
+        verify(executionStatusService).markAs(
+                transactions,
+                ExecutionStatus.FAILED,
+                ExecutionStatus.EXECUTING);
+    }
+
+    private List<ExecutionTransaction> transactions() {
+        return List.of(
+                mock(ExecutionTransaction.class),
+                mock(ExecutionTransaction.class));
     }
 }

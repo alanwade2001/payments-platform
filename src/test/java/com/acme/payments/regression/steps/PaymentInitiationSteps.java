@@ -1,8 +1,10 @@
-package com.acme.payments.regression;
+package com.acme.payments.regression.steps;
 
 import com.acme.payments.reference.AccountNotFoundException;
 import com.acme.payments.reference.ProductCode;
 import com.acme.payments.reference.ProductEntitlement;
+import com.acme.payments.regression.Pain001TestData;
+import com.acme.payments.regression.states.PaymentInitiationContext;
 import com.acme.payments.regression.clients.EngineAdmin;
 import com.acme.payments.regression.clients.InitiationClient;
 import com.acme.payments.regression.clients.ReferenceAdmin;
@@ -145,7 +147,12 @@ public class PaymentInitiationSteps {
 
     @Then("the execution transaction has status {string}")
     public void the_execution_transaction_has_status(String status) {
-        var executionTransaction = context.getExecutionTransaction();
+
+        var instructedTransactionId = context.getInstructedTransaction().id();
+        var result = engineAdmin.getExecutionTransaction(instructedTransactionId);
+        assertThat(result.isPresent()).isTrue();
+
+        var executionTransaction = result.orElseThrow();
         assertThat(executionTransaction.status().name()).isEqualTo(status);
     }
 
@@ -171,10 +178,33 @@ public class PaymentInitiationSteps {
         assertThat(result.isPresent()).isFalse();
     }
 
-    @Then("no execution transaction is created")
-    public void no_execution_transaction_is_created() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
-    }
+    @Given("the valid pain001 instruction {string} has been accepted")
+    public void validPain001InstructionHasBeenAccepted(String filename) {
+        var customerName = "export-customer";
+        var debtorIban = "IE29AIBK93115212345679";
+        var productCode = "SEPA_BULK_CT";
 
+//        Given customer "customer-1" exists
+//        And customer "customer-1" has an account with IBAN "IE29AIBK93115212345678"
+//        And customer "customer-1" is entitled to "SEPA_BULK_CT"
+
+//        Given an SCT pain.001 payment initiation
+//        And the debtor IBAN is "IE29AIBK93115212345678"
+//        When the payment initiation is submitted
+//        Then the payment initiation is "ACCEPTED"
+//        And an instructed transaction is created
+//        And an execution transaction is created
+//        And the execution transaction has status "READY"
+
+        customer_exists(customerName);
+        customer_has_an_account_with_iban(customerName, debtorIban);
+        customer_is_entitled_to(customerName, productCode);
+        an_sct_pain_payment_initiation(1);
+        the_debtor_iban_is(debtorIban);
+        the_payment_initiation_is_submitted();
+        the_payment_initiation_is("ACCEPTED");
+        an_instructed_transaction_is_created();
+        an_execution_transaction_is_created();
+        the_execution_transaction_has_status("READY");
+    }
 }
