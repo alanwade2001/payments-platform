@@ -10,6 +10,10 @@ import java.util.Optional;
 @Repository
 public interface InstructedTransactionRepository extends JpaRepository<InstructedTransactionEntity, Long> {
     default Optional<InstructedTransactionEntity> findById(InstructedTransactionId id) {
-        return findById(Long.parseLong(id.value()));
+        try{
+            return findById(Long.parseLong(id.value()));
+        }catch(NumberFormatException e){
+            return Optional.empty();
+        }
     }
 }

@@ -5,9 +5,11 @@ import com.acme.payments.engine.InstructedTransaction;
 import com.acme.payments.engine.InstructedTransactionId;
 import com.acme.payments.engine.SchemeId;
 
+import java.util.List;
+
 public interface Scheme {
     SchemeId id();
     ExecutionMode executionMode();
     ExecutionTransaction prepare(InstructedTransaction transaction, InstructedTransactionId id);
-    void execute( ExecutionTransaction transaction );
+    void execute( List<ExecutionTransaction> transactions );
 }

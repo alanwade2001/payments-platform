@@ -17,3 +17,8 @@ spring:
 
   flyway.enabled: true
 
+payments.schemes.sepa-ct:
+  instructing-agent-bic: AAAAGB2LXXX
+  instructed-agent-bic: BBBBDEFFXXX
+  settlement-method: CLRG
+

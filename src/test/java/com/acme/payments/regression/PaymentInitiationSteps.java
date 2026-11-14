@@ -1,7 +1,5 @@
 package com.acme.payments.regression;
 
-import com.acme.payments.engine.internal.EngineAdminController;
-import com.acme.payments.initiation.InitiationStatus;
 import com.acme.payments.reference.AccountNotFoundException;
 import com.acme.payments.reference.ProductCode;
 import com.acme.payments.reference.ProductEntitlement;

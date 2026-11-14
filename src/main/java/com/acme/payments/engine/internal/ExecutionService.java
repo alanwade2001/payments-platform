@@ -1,53 +1,79 @@
 package com.acme.payments.engine.internal;
 
-import com.acme.payments.engine.*;
-import com.acme.payments.engine.controls.ControlResult;
-import com.acme.payments.engine.internal.persistence.TransactionMapper;
-import com.acme.payments.engine.internal.persistence.TransactionRepository;
+import com.acme.payments.engine.ExecutionStatus;
+import com.acme.payments.engine.ExecutionTransaction;
+import com.acme.payments.engine.SchemeId;
+import com.acme.payments.engine.internal.persistence.ExecutionTransactionRepository;
 import com.acme.payments.engine.schemes.Scheme;
 import com.acme.payments.engine.schemes.SchemeRegistry;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-@Slf4j
-@RequiredArgsConstructor
+import java.util.List;
+
 @Service
+@RequiredArgsConstructor
 public class ExecutionService {
 
     private final SchemeRegistry schemeRegistry;
-    private final PaymentControlService paymentControlService;
-    private final TransactionRepository transactionRepository;
-    private final TransactionMapper transactionMapper;
+    private final ExecutionTransactionRepository transactionRepository;
 
-    public void accept( InstructedTransaction transaction ) {
 
-        var controlResult = paymentControlService.evaluate(transaction);
+    public void execute(
+            SchemeId schemeId,
+            List<ExecutionTransaction> transactions) {
 
-        InstructedTransactionId itId = persist(transaction, controlResult);
-        log.info("Accepted instructed transaction {}", itId);
+        if (transactions.isEmpty()) {
+            return;
+        }
 
-        if(controlResult.passed()) {
-            ExecutionTransactionId exId = prepare( transaction, itId );
-            log.info("Accepted execution transaction {}", exId);
+        markAsExecuting(transactions);
+
+        try {
+            Scheme scheme = schemeRegistry.get(schemeId);
+
+            scheme.execute(transactions);
+
+            markAsExecuted(transactions);
+
+        } catch (Exception exception) {
+
+            markAsFailed(transactions);
+
+            throw exception;
         }
     }
 
-    public InstructedTransactionId persist(InstructedTransaction transaction, ControlResult result ){
-
-        var entity = transactionMapper.toEntity(transaction);
-
-        var status = result.passed() ? InstructedTransactionStatus.ACCEPTED : InstructedTransactionStatus.REJECTED;
-        entity.setStatus(status);
-
-        return transactionRepository.save(entity);
+    private void markAsExecuting(List<ExecutionTransaction> transactions) {
+        markAs(transactions,
+                ExecutionStatus.EXECUTING,
+                ExecutionStatus.READY);
     }
 
+    private void markAsExecuted(List<ExecutionTransaction> transactions) {
+        markAs(transactions,
+                ExecutionStatus.EXECUTED,
+                ExecutionStatus.EXECUTING);
+    }
 
-    public ExecutionTransactionId prepare(InstructedTransaction transaction,  InstructedTransactionId id ) {
-        Scheme scheme = schemeRegistry.get(transaction.metadata().schemeId());
-        var executionTransaction = scheme.prepare(transaction, id);
-        var entity = transactionMapper.toEntity(executionTransaction);
-        return transactionRepository.save(entity);
+    private void markAsFailed(List<ExecutionTransaction> transactions) {
+        markAs(transactions,
+                ExecutionStatus.FAILED,
+                ExecutionStatus.EXECUTING);
+    }
+
+    private void markAs(
+            List<ExecutionTransaction> transactions,
+            ExecutionStatus newStatus,
+            ExecutionStatus oldStatus) {
+
+        var ids = transactions.stream().map(ExecutionTransaction::id).toList();
+
+        // update through repository
+        int updated = transactionRepository.updateStatusById(ids, newStatus, oldStatus);
+
+        if(updated != transactions.size()) {
+            throw new RuntimeException("Not all transactions were updated as expected");
+        }
     }
 }

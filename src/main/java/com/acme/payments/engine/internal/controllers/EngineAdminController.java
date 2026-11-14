@@ -1,20 +1,16 @@
-package com.acme.payments.engine.internal;
+package com.acme.payments.engine.internal.controllers;
 
 import com.acme.payments.engine.ExecutionTransaction;
 import com.acme.payments.engine.ExecutionTransactionId;
 import com.acme.payments.engine.InstructedTransaction;
 import com.acme.payments.engine.InstructedTransactionId;
+import com.acme.payments.engine.internal.ExportInstruction;
+import com.acme.payments.engine.internal.ExportService;
 import com.acme.payments.engine.internal.persistence.ExecutionTransactionRepository;
 import com.acme.payments.engine.internal.persistence.InstructedTransactionRepository;
 import com.acme.payments.engine.internal.persistence.TransactionMapper;
-import com.acme.payments.reference.CustomerDetails;
-import com.acme.payments.reference.CustomerId;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +23,7 @@ public class EngineAdminController {
     private final TransactionMapper transactionMapper;
     private final InstructedTransactionRepository instructedTransactionRepository;
     private final ExecutionTransactionRepository  executionTransactionRepository;
+    private final ExportService exportService;
 
     @GetMapping("/instructed-transactions")
     public List<InstructedTransaction> getInstructedTransactions() {
@@ -46,5 +43,10 @@ public class EngineAdminController {
     @GetMapping("/execution-transactions/{id}")
     public Optional<ExecutionTransaction> getExecutionTransaction(@PathVariable ExecutionTransactionId id) {
         return executionTransactionRepository.findById(id).map(transactionMapper::fromEntity);
+    }
+
+    @PostMapping("/export")
+    void export(@RequestBody ExportInstruction instruction) {
+        exportService.export(instruction);
     }
 }
